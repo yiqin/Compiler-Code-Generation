@@ -56,7 +56,10 @@ intermediate:
 exp:		
 		  exp PLUS term	{ 
         cout << "add " << endl;
-        $$ = $1 + $3; 
+        $$ = $1 + $3;
+
+        // Pop two symbol from the stack machine
+
       }
 		| exp MINUS term	{ 
         cout << "sub " << endl;
@@ -69,10 +72,14 @@ term:
       term MULT final_state { 
         cout << "mul " << endl;
         $$ = $1 * $3; 
+
+        // Pop two symbol from the stack machine
       }
     | term DIVIDE final_state {
         cout << "div " << endl;
         $$ = $1 / $3; 
+
+        // Pop two symbol from the stack machine
       }
     | final_state { $$ = $1; }
     ;
@@ -90,7 +97,8 @@ final_state:
       */
         cout << "push variable" << *$1 << endl;
         $$ = 0;
-        
+
+        // Push it to the stack machine ??
         Symbol *new_symbol = new Symbol();
         new_symbol->set_name(*$1);
         stack_machine->push_back(new_symbol)
@@ -98,6 +106,8 @@ final_state:
     | INTEGER_LITERAL { 
         cout << "push const int" << $1 << endl;
         $$ = $1; 
+
+        // Push it to the stack machine ??
     }
     | LEFT_PARENTHESIS exp RIGHT_PARENTHESIS { $$ = $2; }
     ;
