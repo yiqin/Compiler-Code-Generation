@@ -4,6 +4,41 @@
 #include <string>
 #include <map>
 
+enum class Type {
+	INT,
+	CONST_INT;
+}
+
+class Symbol
+{
+public:
+	const std::string get_name() {
+		return name;
+	}
+	const void set_name(std::string value) {
+		name = value;
+	}
+	const Type get_type() {
+		return type;
+	}
+	const void set_type(Type value) {
+		type = value;
+	}
+	const std::string get_type_str() {
+		if (type == Type::INT || typ == Type::CONST_INT) {
+			return "int";
+		} else {
+			return "string";
+		}
+	}
+
+	std::string code;
+	
+protected:
+	std::string name;
+	Type type;
+};
+
 class Symbol_Table
 {
 public:

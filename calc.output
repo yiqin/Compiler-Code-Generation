@@ -19,8 +19,8 @@ Grammar
     5             | exp
     6             | /* empty */
 
-    7 exp: exp PLUS exp
-    8    | exp MINUS exp
+    7 exp: exp PLUS term
+    8    | exp MINUS term
     9    | term
 
    10 term: term MULT final_state
@@ -59,7 +59,7 @@ intermediate (15)
 exp (16)
     on left: 7 8 9, on right: 4 5 7 8 15
 term (17)
-    on left: 10 11 12, on right: 9 10 11
+    on left: 10 11 12, on right: 7 8 9 10 11
 final_state (18)
     on left: 13 14 15, on right: 10 11 12
 
@@ -131,8 +131,8 @@ state 5
 state 6
 
     5 intermediate: exp .
-    7 exp: exp . PLUS exp
-    8    | exp . MINUS exp
+    7 exp: exp . PLUS term
+    8    | exp . MINUS term
 
     PLUS   shift, and go to state 14
     MINUS  shift, and go to state 15
@@ -181,8 +181,8 @@ state 10
 
 state 11
 
-    7 exp: exp . PLUS exp
-    8    | exp . MINUS exp
+    7 exp: exp . PLUS term
+    8    | exp . MINUS term
    15 final_state: LEFT_PARENTHESIS exp . RIGHT_PARENTHESIS
 
     PLUS               shift, and go to state 14
@@ -219,27 +219,25 @@ state 13
 
 state 14
 
-    7 exp: exp PLUS . exp
+    7 exp: exp PLUS . term
 
     INTEGER_LITERAL   shift, and go to state 1
     VARIABLE          shift, and go to state 10
     LEFT_PARENTHESIS  shift, and go to state 3
 
-    exp          go to state 21
-    term         go to state 7
+    term         go to state 21
     final_state  go to state 8
 
 
 state 15
 
-    8 exp: exp MINUS . exp
+    8 exp: exp MINUS . term
 
     INTEGER_LITERAL   shift, and go to state 1
     VARIABLE          shift, and go to state 10
     LEFT_PARENTHESIS  shift, and go to state 3
 
-    exp          go to state 22
-    term         go to state 7
+    term         go to state 22
     final_state  go to state 8
 
 
@@ -268,8 +266,8 @@ state 17
 state 18
 
     4 intermediate: VARIABLE ASSIGN exp .
-    7 exp: exp . PLUS exp
-    8    | exp . MINUS exp
+    7 exp: exp . PLUS term
+    8    | exp . MINUS term
 
     PLUS   shift, and go to state 14
     MINUS  shift, and go to state 15
@@ -293,20 +291,24 @@ state 20
 
 state 21
 
-    7 exp: exp . PLUS exp
-    7    | exp PLUS exp .
-    8    | exp . MINUS exp
+    7 exp: exp PLUS term .
+   10 term: term . MULT final_state
+   11     | term . DIVIDE final_state
 
-    MINUS  shift, and go to state 15
+    MULT    shift, and go to state 16
+    DIVIDE  shift, and go to state 17
 
     $default  reduce using rule 7 (exp)
 
 
 state 22
 
-    7 exp: exp . PLUS exp
-    8    | exp . MINUS exp
-    8    | exp MINUS exp .
+    8 exp: exp MINUS term .
+   10 term: term . MULT final_state
+   11     | term . DIVIDE final_state
+
+    MULT    shift, and go to state 16
+    DIVIDE  shift, and go to state 17
 
     $default  reduce using rule 8 (exp)
 

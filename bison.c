@@ -122,7 +122,7 @@ Symbol_Table symbol_table;
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE
-#line 9 "calc.y"
+#line 8 "calc.y"
 {
   int		int_val;
   string*	op_val;
@@ -356,7 +356,7 @@ union yyalloc
 /* YYFINAL -- State number of the termination state.  */
 #define YYFINAL  12
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   24
+#define YYLAST   25
 
 /* YYNTOKENS -- Number of terminals.  */
 #define YYNTOKENS  13
@@ -419,8 +419,8 @@ static const yytype_uint8 yyprhs[] =
 static const yytype_int8 yyrhs[] =
 {
       14,     0,    -1,    -1,    15,     9,    14,    -1,    -1,     4,
-      12,    16,    -1,    16,    -1,    -1,    16,     5,    16,    -1,
-      16,     6,    16,    -1,    17,    -1,    17,     7,    18,    -1,
+      12,    16,    -1,    16,    -1,    -1,    16,     5,    17,    -1,
+      16,     6,    17,    -1,    17,    -1,    17,     7,    18,    -1,
       17,     8,    18,    -1,    18,    -1,     4,    -1,     3,    -1,
       10,    16,    11,    -1
 };
@@ -428,8 +428,8 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    38,    38,    39,    42,    46,    50,    51,    55,    56,
-      57,    61,    62,    63,    67,    76,    77
+       0,    37,    37,    38,    41,    45,    49,    50,    54,    58,
+      62,    66,    70,    74,    78,    91,    95
 };
 #endif
 
@@ -487,18 +487,18 @@ static const yytype_int8 yydefgoto[] =
 
 /* YYPACT[STATE-NUM] -- Index in YYTABLE of the portion describing
    STATE-NUM.  */
-#define YYPACT_NINF -8
+#define YYPACT_NINF -11
 static const yytype_int8 yypact[] =
 {
-      -2,    -8,    -7,     0,     9,    14,    10,    13,    -8,     0,
-      -8,     8,    -8,    -2,     0,     0,     0,     0,    10,    -8,
-      -8,    16,    -8,    -8,    -8
+      -3,   -11,    -4,    -1,    15,    16,     8,    12,   -11,    -1,
+     -11,     5,   -11,    -3,    -1,    -1,    -1,    -1,     8,   -11,
+     -11,    12,    12,   -11,   -11
 };
 
 /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-      -8,    11,    -8,    -3,    -8,     1
+     -11,     4,   -11,     9,   -10,     6
 };
 
 /* YYTABLE[YYPACT[STATE-NUM]].  What to do in state STATE-NUM.  If
@@ -508,16 +508,16 @@ static const yytype_int8 yypgoto[] =
 #define YYTABLE_NINF -8
 static const yytype_int8 yytable[] =
 {
-      11,     1,     2,     1,    10,     9,    18,    -7,     3,    12,
-       3,    21,    22,    14,    15,    14,    15,    23,    24,    19,
-      16,    17,    15,    13,    20
+       1,     2,     1,    10,    21,    22,    -7,     3,     9,     3,
+      14,    15,    11,    14,    15,    12,    19,    20,    18,    16,
+      17,     0,    23,    24,     0,    13
 };
 
-static const yytype_uint8 yycheck[] =
+static const yytype_int8 yycheck[] =
 {
-       3,     3,     4,     3,     4,    12,     9,     9,    10,     0,
-      10,    14,    15,     5,     6,     5,     6,    16,    17,    11,
-       7,     8,     6,     9,    13
+       3,     4,     3,     4,    14,    15,     9,    10,    12,    10,
+       5,     6,     3,     5,     6,     0,    11,    13,     9,     7,
+       8,    -1,    16,    17,    -1,     9
 };
 
 /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
@@ -526,7 +526,7 @@ static const yytype_uint8 yystos[] =
 {
        0,     3,     4,    10,    14,    15,    16,    17,    18,    12,
        4,    16,     0,     9,     5,     6,     7,     8,    16,    11,
-      14,    16,    16,    18,    18
+      14,    17,    17,    18,    18
 };
 
 #define yyerrok		(yyerrstatus = 0)
@@ -1341,91 +1341,110 @@ yyreduce:
   switch (yyn)
     {
         case 3:
-#line 39 "calc.y"
+#line 38 "calc.y"
     { 
-        cout << (yyvsp[(1) - (3)].int_val) << "; "  << endl;
+        // cout << $1 << "; "  << endl;
       ;}
     break;
 
   case 4:
-#line 42 "calc.y"
+#line 41 "calc.y"
     {;}
     break;
 
   case 5:
-#line 46 "calc.y"
+#line 45 "calc.y"
     { 
         (yyval.int_val) = (yyvsp[(3) - (3)].int_val); 
-        symbol_table.add(*(yyvsp[(1) - (3)].op_val), (yyvsp[(3) - (3)].int_val));
+        // symbol_table.add(*$1, $3);
       ;}
     break;
 
   case 6:
-#line 50 "calc.y"
+#line 49 "calc.y"
     { (yyval.int_val) = (yyvsp[(1) - (1)].int_val); ;}
     break;
 
   case 7:
-#line 51 "calc.y"
+#line 50 "calc.y"
     {;}
     break;
 
   case 8:
-#line 55 "calc.y"
-    { (yyval.int_val) = (yyvsp[(1) - (3)].int_val) + (yyvsp[(3) - (3)].int_val); ;}
+#line 54 "calc.y"
+    { 
+        cout << "add " << endl;
+        (yyval.int_val) = (yyvsp[(1) - (3)].int_val) + (yyvsp[(3) - (3)].int_val); 
+      ;}
     break;
 
   case 9:
-#line 56 "calc.y"
-    { (yyval.int_val) = (yyvsp[(1) - (3)].int_val) - (yyvsp[(3) - (3)].int_val); ;}
+#line 58 "calc.y"
+    { 
+        cout << "sub " << endl;
+        (yyval.int_val) = (yyvsp[(1) - (3)].int_val) - (yyvsp[(3) - (3)].int_val); 
+      ;}
     break;
 
   case 10:
-#line 57 "calc.y"
+#line 62 "calc.y"
     { (yyval.int_val) = (yyvsp[(1) - (1)].int_val); ;}
     break;
 
   case 11:
-#line 61 "calc.y"
-    { (yyval.int_val) = (yyvsp[(1) - (3)].int_val) * (yyvsp[(3) - (3)].int_val); ;}
+#line 66 "calc.y"
+    { 
+        cout << "mul " << endl;
+        (yyval.int_val) = (yyvsp[(1) - (3)].int_val) * (yyvsp[(3) - (3)].int_val); 
+      ;}
     break;
 
   case 12:
-#line 62 "calc.y"
-    { (yyval.int_val) = (yyvsp[(1) - (3)].int_val) / (yyvsp[(3) - (3)].int_val); ;}
+#line 70 "calc.y"
+    {
+        cout << "div " << endl;
+        (yyval.int_val) = (yyvsp[(1) - (3)].int_val) / (yyvsp[(3) - (3)].int_val); 
+      ;}
     break;
 
   case 13:
-#line 63 "calc.y"
+#line 74 "calc.y"
     { (yyval.int_val) = (yyvsp[(1) - (1)].int_val); ;}
     break;
 
   case 14:
-#line 67 "calc.y"
-    { 
-        if (symbol_table.is_variable_defined(*(yyvsp[(1) - (1)].op_val))) {
+#line 78 "calc.y"
+    {
+      /* 
+        if (symbol_table.is_variable_defined(*$1)) {
           // cout << "map contains " << *$1 << endl;
-          (yyval.int_val) = symbol_table.get_value(*(yyvsp[(1) - (1)].op_val));
+          $$ = symbol_table.get_value(*$1);
         } else {
-          cout << "ERROR: " <<*(yyvsp[(1) - (1)].op_val) << " has not been initialized." << endl;
+          cout << "ERROR: " <<*$1 << " has not been initialized." << endl;
           exit(1);
         }
+      */
+        cout << "push " << *(yyvsp[(1) - (1)].op_val) << endl;
+        (yyval.int_val) = 0;
       ;}
     break;
 
   case 15:
-#line 76 "calc.y"
-    { (yyval.int_val) = (yyvsp[(1) - (1)].int_val); ;}
+#line 91 "calc.y"
+    { 
+        cout << "push " << (yyvsp[(1) - (1)].int_val) << endl;
+        (yyval.int_val) = (yyvsp[(1) - (1)].int_val); 
+    ;}
     break;
 
   case 16:
-#line 77 "calc.y"
+#line 95 "calc.y"
     { (yyval.int_val) = (yyvsp[(2) - (3)].int_val); ;}
     break;
 
 
 /* Line 1267 of yacc.c.  */
-#line 1429 "calc.tab.c"
+#line 1448 "calc.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -1639,7 +1658,7 @@ yyreturn:
 }
 
 
-#line 80 "calc.y"
+#line 98 "calc.y"
 
 
 int yyerror(string s)
