@@ -8,4 +8,5 @@ using namespace std;
 #include <stdio.h>
 #include <string>
 #include <map>
+#include <vector>
 #include "symbol_table.hpp"

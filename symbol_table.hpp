@@ -6,8 +6,8 @@
 
 enum class Type {
 	INT,
-	CONST_INT;
-}
+	CONST_INT,
+};
 
 class Symbol
 {
@@ -25,16 +25,21 @@ public:
 		type = value;
 	}
 	const std::string get_type_str() {
-		if (type == Type::INT || typ == Type::CONST_INT) {
+		if (type == Type::INT || type == Type::CONST_INT) {
 			return "int";
-		} else {
-			return "string";
 		}
 	}
 
-	std::string code;
-	
+	const int get_int_value() {
+		return int_value;
+	}
+	const void set_int_value(int value) {
+		int_value = value;
+	}
+	// std::string code;
+
 protected:
+	int int_value;
 	std::string name;
 	Type type;
 };
