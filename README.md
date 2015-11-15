@@ -1,5 +1,8 @@
 Question 2
 =======
+
+It's in x86 Assembly/GAS Syntax.
+
 Type
 ```
 ./calc <testCase.txt
@@ -22,3 +25,9 @@ assign variable a with 1
 ```
 
 2. The code is based on the exercise 1 in the Assignment 4.
+
+
+3. right operand pushed to stack first and thus is at the bottom when pop
+
+4. The instruction set is x86.
+

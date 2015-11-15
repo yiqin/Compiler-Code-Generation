@@ -5,6 +5,9 @@ int yylex(void);
 Symbol_Table symbol_table;
 
 vector<Symbol*> stack_machine;
+
+int local_variable_offset = -4;
+
 %}
 
 %union{
@@ -46,25 +49,40 @@ input:
 intermediate:
       VARIABLE ASSIGN exp { 
         $$ = $3; 
-        symbol_table.add(*$1, $3);
+
         stack_machine.pop_back();
-        cout << "assign variable " << *$1 << " with " << $3 << endl;
+        cout << "pop %eax" << endl;
+        cout << "movl %eax, " << local_variable_offset << "(%ebp)" << "  ;" << "assign " << *$1 << endl;
+        symbol_table.add(*$1, local_variable_offset);
+
+        // Update the offset
+        local_variable_offset += -4;
       }
-    | exp { $$ = $1; }
+    | exp { 
+      $$ = $1;
+
+      // printf function.
+      cout << "##### expression " << $1 << endl; 
+      cout << "pop %eax" << endl;
+      cout << "movl %eax, %esi" << endl;
+      cout << "$.LCO, %eax" << endl;
+      cout << "movl $0, %eax" << endl;
+      cout << "call printf" << endl;
+
+    }
     | {}
     ;
 
 exp:		
 		  exp PLUS term	{ 
-        cout << "add " << endl;
-        $$ = $1 + $3;
-
         // Pop two symbol from the stack machine
         Symbol* symbol_2 = stack_machine.back();
         stack_machine.pop_back();
+        cout << "pop %eax" << endl;
 
         Symbol* symbol_1 = stack_machine.back();
         stack_machine.pop_back();
+        cout << "pop %edx" << endl;
 
         Symbol* symbol_result = new Symbol();
         symbol_result->set_type(Type::CONST_INT);
@@ -73,17 +91,21 @@ exp:
         symbol_result->set_int_value(int_value_result);
 
         stack_machine.push_back(symbol_result);
+
+        cout << "addl %edx, %eax" << endl;
+        cout << "push %eax " << symbol_result->get_int_value() << endl;
+
+        $$ = $1 + $3;
       }
 		| exp MINUS term	{ 
-        cout << "sub " << endl;
-        $$ = $1 - $3; 
-
         // Pop two symbol from the stack machine
         Symbol* symbol_2 = stack_machine.back();
         stack_machine.pop_back();
-
+        cout << "pop %eax" << endl;
+        
         Symbol* symbol_1 = stack_machine.back();
         stack_machine.pop_back();
+        cout << "pop %edx" << endl;
 
         Symbol* symbol_result = new Symbol();
         symbol_result->set_type(Type::CONST_INT);
@@ -92,21 +114,25 @@ exp:
         symbol_result->set_int_value(int_value_result);
 
         stack_machine.push_back(symbol_result);
+
+        cout << "subl %edx, %eax" << endl;
+        cout << "push %eax" << endl;
+
+        $$ = $1 - $3; 
       }
-    | term          { $$ = $1; }
+    | term { $$ = $1; }
 		;
 
 term:
       term MULT final_state { 
-        cout << "mul " << endl;
-        $$ = $1 * $3; 
-
         // Pop two symbol from the stack machine
         Symbol* symbol_2 = stack_machine.back();
         stack_machine.pop_back();
+        cout << "pop %eax" << endl;
 
         Symbol* symbol_1 = stack_machine.back();
         stack_machine.pop_back();
+        cout << "pop %edx" << endl;
 
         Symbol* symbol_result = new Symbol();
         symbol_result->set_type(Type::CONST_INT);
@@ -115,17 +141,21 @@ term:
         symbol_result->set_int_value(int_value_result);
 
         stack_machine.push_back(symbol_result);
+
+        cout << "imul %edx %eax" << endl;
+        cout << "push %eax" << endl;
+
+        $$ = $1 * $3; 
       }
     | term DIVIDE final_state {
-        cout << "div " << endl;
-        $$ = $1 / $3; 
-
         // Pop two symbol from the stack machine
         Symbol* symbol_2 = stack_machine.back();
         stack_machine.pop_back();
+        cout << "pop %ecx" << endl;
 
         Symbol* symbol_1 = stack_machine.back();
         stack_machine.pop_back();
+        cout << "pop %eax" << endl;
 
         Symbol* symbol_result = new Symbol();
         symbol_result->set_type(Type::CONST_INT);
@@ -134,24 +164,32 @@ term:
         symbol_result->set_int_value(int_value_result);
 
         stack_machine.push_back(symbol_result);
+
+        cout << "cltd" << endl;
+        cout << "idivl %ecx" << "  ; %eax <- %eax / %ecx, %edx <- %eax % %ecx" <<endl;
+        cout << "push %eax" << endl;
+
+        $$ = $1 / $3; 
       }
     | final_state { $$ = $1; }
     ;
 
 final_state:
       VARIABLE {
-        cout << "push variable " << *$1 << endl;
         $$ = 0;
 
         // Push it to the stack machine ??
         Symbol *new_symbol = new Symbol();
         new_symbol->set_type(Type::INT);
+
         new_symbol->set_name(*$1);
 
         // set int value
         if (symbol_table.is_variable_defined(*$1)) {
           new_symbol->set_int_value(symbol_table.get_value(*$1));
           stack_machine.push_back(new_symbol);
+
+          cout << "push " << new_symbol->get_int_value() << "(%ebp)" << "  ;get " << new_symbol->get_name()<< endl;
 
         } else {
           cout << "ERROR: " <<*$1 << " has not been initialized." << endl;
@@ -160,7 +198,6 @@ final_state:
         
       }
     | INTEGER_LITERAL { 
-        cout << "push const int " << $1 << endl;
         $$ = $1; 
 
         // Push it to the stack machine ??
@@ -169,6 +206,7 @@ final_state:
         new_symbol->set_int_value($1);
 
         stack_machine.push_back(new_symbol);
+        cout << "push $" << $1 << endl;
     }
     | LEFT_PARENTHESIS exp RIGHT_PARENTHESIS { $$ = $2; }
     ;

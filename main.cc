@@ -13,7 +13,11 @@ int main(int argc, char **argv)
     exit( 1 );
   }
   
+  cout << ".LC0:\n.string \"%d\"" << endl;
+  cout << "main:" << endl;
   yyparse();
 
+  cout << "leave" << endl;
+  cout << "ret" << endl;
   return 0;
 }
