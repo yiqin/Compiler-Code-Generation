@@ -52,15 +52,16 @@ intermediate:
 
         stack_machine.pop_back();
         cout << "pop %eax" << endl;
-        cout << "movl %eax, " << local_variable_offset << "(%ebp)" << "  ;" << "assign " << *$1 << endl;
+        cout << "movl %eax, " << local_variable_offset << "(%ebp)" << "    # " << "assign " << *$1 << endl;
         
         // Create a new symbol and put it into the symbol table.
         Symbol* new_symbol = new Symbol();
         new_symbol->set_name(*$1);
         new_symbol->set_type(Type::INT);
         new_symbol->set_int_value($3);
-        // TODO: update later....
-        new_symbol->set_address("-4");
+        // set the address
+        string address = to_string(local_variable_offset);
+        new_symbol->set_address(address+"(%ebp)");
 
         symbol_table.add(*$1, new_symbol);
 
@@ -71,10 +72,9 @@ intermediate:
       $$ = $1;
 
       // printf function.
-      cout << "##### expression " << $1 << endl; 
-      cout << "pop %eax" << endl;
+      cout << "pop %eax" << "    # display the value calling the function printf "<< endl;
       cout << "movl %eax, %esi" << endl;
-      cout << "$.LCO, %eax" << endl;
+      cout << "$.LCO, %edi" << endl;
       cout << "movl $0, %eax" << endl;
       cout << "call printf" << endl;
 
@@ -102,7 +102,7 @@ exp:
         stack_machine.push_back(symbol_result);
 
         cout << "addl %edx, %eax" << endl;
-        cout << "push %eax " << symbol_1->get_int_value() << endl;
+        cout << "push %eax " << endl;
 
         $$ = $1 + $3;
       }
@@ -175,7 +175,7 @@ term:
         stack_machine.push_back(symbol_result);
 
         cout << "cltd" << endl;
-        cout << "idivl %ecx" << "  ; %eax <- %eax / %ecx, %edx <- %eax % %ecx" <<endl;
+        cout << "idivl %ecx" << "    # %eax <- %eax / %ecx, %edx <- %eax % %ecx" <<endl;
         cout << "push %eax" << endl;
 
         $$ = $1 / $3; 
@@ -194,7 +194,7 @@ final_state:
           $$ = tmp_symbol->get_int_value();
 
           stack_machine.push_back(tmp_symbol);
-          cout << "push " << 0 << "(%ebp)" << "  ;get " << tmp_symbol->get_name()<< endl;
+          cout << "push " << tmp_symbol->get_address() << "    # get " << tmp_symbol->get_name()<< endl;
 
         } else {
           cout << "ERROR: " <<*$1 << " has not been initialized." << endl;

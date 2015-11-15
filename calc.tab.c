@@ -433,7 +433,7 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    42,    42,    43,    46,    50,    70,    82,    86,   109,
+       0,    42,    42,    43,    46,    50,    71,    82,    86,   109,
      132,   136,   159,   183,   187,   205,   216
 };
 #endif
@@ -1364,15 +1364,16 @@ yyreduce:
 
         stack_machine.pop_back();
         cout << "pop %eax" << endl;
-        cout << "movl %eax, " << local_variable_offset << "(%ebp)" << "  ;" << "assign " << *(yyvsp[(1) - (3)].op_val) << endl;
+        cout << "movl %eax, " << local_variable_offset << "(%ebp)" << "    # " << "assign " << *(yyvsp[(1) - (3)].op_val) << endl;
         
         // Create a new symbol and put it into the symbol table.
         Symbol* new_symbol = new Symbol();
         new_symbol->set_name(*(yyvsp[(1) - (3)].op_val));
         new_symbol->set_type(Type::INT);
         new_symbol->set_int_value((yyvsp[(3) - (3)].int_val));
-        // TODO: update later....
-        new_symbol->set_address("-4");
+        // set the address
+        string address = to_string(local_variable_offset);
+        new_symbol->set_address(address+"(%ebp)");
 
         symbol_table.add(*(yyvsp[(1) - (3)].op_val), new_symbol);
 
@@ -1382,15 +1383,14 @@ yyreduce:
     break;
 
   case 6:
-#line 70 "calc.y"
+#line 71 "calc.y"
     { 
       (yyval.int_val) = (yyvsp[(1) - (1)].int_val);
 
       // printf function.
-      cout << "##### expression " << (yyvsp[(1) - (1)].int_val) << endl; 
-      cout << "pop %eax" << endl;
+      cout << "pop %eax" << "    # display the value calling the function printf "<< endl;
       cout << "movl %eax, %esi" << endl;
-      cout << "$.LCO, %eax" << endl;
+      cout << "$.LCO, %edi" << endl;
       cout << "movl $0, %eax" << endl;
       cout << "call printf" << endl;
 
@@ -1423,7 +1423,7 @@ yyreduce:
         stack_machine.push_back(symbol_result);
 
         cout << "addl %edx, %eax" << endl;
-        cout << "push %eax " << symbol_1->get_int_value() << endl;
+        cout << "push %eax " << endl;
 
         (yyval.int_val) = (yyvsp[(1) - (3)].int_val) + (yyvsp[(3) - (3)].int_val);
       ;}
@@ -1509,7 +1509,7 @@ yyreduce:
         stack_machine.push_back(symbol_result);
 
         cout << "cltd" << endl;
-        cout << "idivl %ecx" << "  ; %eax <- %eax / %ecx, %edx <- %eax % %ecx" <<endl;
+        cout << "idivl %ecx" << "    # %eax <- %eax / %ecx, %edx <- %eax % %ecx" <<endl;
         cout << "push %eax" << endl;
 
         (yyval.int_val) = (yyvsp[(1) - (3)].int_val) / (yyvsp[(3) - (3)].int_val); 
@@ -1533,7 +1533,7 @@ yyreduce:
           (yyval.int_val) = tmp_symbol->get_int_value();
 
           stack_machine.push_back(tmp_symbol);
-          cout << "push " << 0 << "(%ebp)" << "  ;get " << tmp_symbol->get_name()<< endl;
+          cout << "push " << tmp_symbol->get_address() << "    # get " << tmp_symbol->get_name()<< endl;
 
         } else {
           cout << "ERROR: " <<*(yyvsp[(1) - (1)].op_val) << " has not been initialized." << endl;
