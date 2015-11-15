@@ -15,9 +15,12 @@ int main(int argc, char **argv)
   
   cout << ".LC0:\n.string \"%d\"" << endl;
   cout << "main:" << endl;
+  
   yyparse();
 
+  cout << "movl $0, %eax" << endl;
   cout << "leave" << endl;
   cout << "ret" << endl;
+
   return 0;
 }

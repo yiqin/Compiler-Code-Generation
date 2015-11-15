@@ -5,7 +5,7 @@
 #include <map>
 
 enum class Type {
-	INT,
+	LOCAL_VARIABLE_INT,
 	CONST_INT,
 };
 
@@ -26,7 +26,7 @@ public:
 		type = value;
 	}
 	const std::string get_type_str() {
-		if (type == Type::INT || type == Type::CONST_INT) {
+		if (type == Type::LOCAL_VARIABLE_INT || type == Type::CONST_INT) {
 			return "int";
 		}
 	}

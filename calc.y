@@ -57,7 +57,7 @@ intermediate:
         // Create a new symbol and put it into the symbol table.
         Symbol* new_symbol = new Symbol();
         new_symbol->set_name(*$1);
-        new_symbol->set_type(Type::INT);
+        new_symbol->set_type(Type::LOCAL_VARIABLE_INT);
         new_symbol->set_int_value($3);
         // set the address
         string address = to_string(local_variable_offset);

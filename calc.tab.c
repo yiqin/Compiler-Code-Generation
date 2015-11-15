@@ -1369,7 +1369,7 @@ yyreduce:
         // Create a new symbol and put it into the symbol table.
         Symbol* new_symbol = new Symbol();
         new_symbol->set_name(*(yyvsp[(1) - (3)].op_val));
-        new_symbol->set_type(Type::INT);
+        new_symbol->set_type(Type::LOCAL_VARIABLE_INT);
         new_symbol->set_int_value((yyvsp[(3) - (3)].int_val));
         // set the address
         string address = to_string(local_variable_offset);
