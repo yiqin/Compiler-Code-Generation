@@ -18,6 +18,7 @@ public:
 	const void set_name(std::string value) {
 		name = value;
 	}
+
 	const Type get_type() {
 		return type;
 	}
@@ -36,21 +37,30 @@ public:
 	const void set_int_value(int value) {
 		int_value = value;
 	}
-	// std::string code;
+
+	const std::string get_address() {
+		return address;
+	}
+	const void set_address(std::string value) {
+		address = value;
+	}
 
 protected:
 	int int_value;
 	std::string name;
 	Type type;
+	std::string address;
 };
+
+// change value to symbol...
 
 class Symbol_Table
 {
 public:
-	const void add (std::string key, int value) {
+	const void add (std::string key, Symbol* value) {
 		m[key] = value;
 	};
-	const int get_value (std::string key) {
+	Symbol* get_symbol (std::string key) {
 		return m[key];
 	};
 	const bool is_variable_defined (std::string key) {
@@ -61,7 +71,7 @@ public:
 		}
 	};
 protected:
-	std::map<std::string, int> m;
+	std::map<std::string, Symbol*> m;
 };
 
 #endif

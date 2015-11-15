@@ -433,8 +433,8 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    42,    42,    43,    46,    50,    61,    73,    77,   100,
-     123,   127,   150,   174,   178,   200,   211
+       0,    42,    42,    43,    46,    50,    70,    82,    86,   109,
+     132,   136,   159,   183,   187,   205,   216
 };
 #endif
 
@@ -1365,7 +1365,16 @@ yyreduce:
         stack_machine.pop_back();
         cout << "pop %eax" << endl;
         cout << "movl %eax, " << local_variable_offset << "(%ebp)" << "  ;" << "assign " << *(yyvsp[(1) - (3)].op_val) << endl;
-        symbol_table.add(*(yyvsp[(1) - (3)].op_val), local_variable_offset);
+        
+        // Create a new symbol and put it into the symbol table.
+        Symbol* new_symbol = new Symbol();
+        new_symbol->set_name(*(yyvsp[(1) - (3)].op_val));
+        new_symbol->set_type(Type::INT);
+        new_symbol->set_int_value((yyvsp[(3) - (3)].int_val));
+        // TODO: update later....
+        new_symbol->set_address("-4");
+
+        symbol_table.add(*(yyvsp[(1) - (3)].op_val), new_symbol);
 
         // Update the offset
         local_variable_offset += -4;
@@ -1373,7 +1382,7 @@ yyreduce:
     break;
 
   case 6:
-#line 61 "calc.y"
+#line 70 "calc.y"
     { 
       (yyval.int_val) = (yyvsp[(1) - (1)].int_val);
 
@@ -1389,12 +1398,12 @@ yyreduce:
     break;
 
   case 7:
-#line 73 "calc.y"
+#line 82 "calc.y"
     {;}
     break;
 
   case 8:
-#line 77 "calc.y"
+#line 86 "calc.y"
     { 
         // Pop two symbol from the stack machine
         Symbol* symbol_2 = stack_machine.back();
@@ -1414,14 +1423,14 @@ yyreduce:
         stack_machine.push_back(symbol_result);
 
         cout << "addl %edx, %eax" << endl;
-        cout << "push %eax " << symbol_result->get_int_value() << endl;
+        cout << "push %eax " << symbol_1->get_int_value() << endl;
 
         (yyval.int_val) = (yyvsp[(1) - (3)].int_val) + (yyvsp[(3) - (3)].int_val);
       ;}
     break;
 
   case 9:
-#line 100 "calc.y"
+#line 109 "calc.y"
     { 
         // Pop two symbol from the stack machine
         Symbol* symbol_2 = stack_machine.back();
@@ -1448,12 +1457,12 @@ yyreduce:
     break;
 
   case 10:
-#line 123 "calc.y"
+#line 132 "calc.y"
     { (yyval.int_val) = (yyvsp[(1) - (1)].int_val); ;}
     break;
 
   case 11:
-#line 127 "calc.y"
+#line 136 "calc.y"
     { 
         // Pop two symbol from the stack machine
         Symbol* symbol_2 = stack_machine.back();
@@ -1480,7 +1489,7 @@ yyreduce:
     break;
 
   case 12:
-#line 150 "calc.y"
+#line 159 "calc.y"
     {
         // Pop two symbol from the stack machine
         Symbol* symbol_2 = stack_machine.back();
@@ -1508,42 +1517,38 @@ yyreduce:
     break;
 
   case 13:
-#line 174 "calc.y"
+#line 183 "calc.y"
     { (yyval.int_val) = (yyvsp[(1) - (1)].int_val); ;}
     break;
 
   case 14:
-#line 178 "calc.y"
+#line 187 "calc.y"
     {
-        (yyval.int_val) = 0;
-
-        // Push it to the stack machine ??
-        Symbol *new_symbol = new Symbol();
-        new_symbol->set_type(Type::INT);
-
-        new_symbol->set_name(*(yyvsp[(1) - (1)].op_val));
-
-        // set int value
+        // get the local variable fromt the symbol table
         if (symbol_table.is_variable_defined(*(yyvsp[(1) - (1)].op_val))) {
-          new_symbol->set_int_value(symbol_table.get_value(*(yyvsp[(1) - (1)].op_val)));
-          stack_machine.push_back(new_symbol);
 
-          cout << "push " << new_symbol->get_int_value() << "(%ebp)" << "  ;get " << new_symbol->get_name()<< endl;
+          Symbol *tmp_symbol; 
+          tmp_symbol = symbol_table.get_symbol(*(yyvsp[(1) - (1)].op_val));
+
+          (yyval.int_val) = tmp_symbol->get_int_value();
+
+          stack_machine.push_back(tmp_symbol);
+          cout << "push " << 0 << "(%ebp)" << "  ;get " << tmp_symbol->get_name()<< endl;
 
         } else {
           cout << "ERROR: " <<*(yyvsp[(1) - (1)].op_val) << " has not been initialized." << endl;
-          // exit(1);
+          exit(1);
         }
         
       ;}
     break;
 
   case 15:
-#line 200 "calc.y"
+#line 205 "calc.y"
     { 
         (yyval.int_val) = (yyvsp[(1) - (1)].int_val); 
 
-        // Push it to the stack machine ??
+        // Push it to the stack machine
         Symbol *new_symbol = new Symbol();
         new_symbol->set_type(Type::CONST_INT);
         new_symbol->set_int_value((yyvsp[(1) - (1)].int_val));
@@ -1554,13 +1559,13 @@ yyreduce:
     break;
 
   case 16:
-#line 211 "calc.y"
+#line 216 "calc.y"
     { (yyval.int_val) = (yyvsp[(2) - (3)].int_val); ;}
     break;
 
 
 /* Line 1267 of yacc.c.  */
-#line 1564 "calc.tab.c"
+#line 1569 "calc.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -1774,7 +1779,7 @@ yyreturn:
 }
 
 
-#line 214 "calc.y"
+#line 219 "calc.y"
 
 
 int yyerror(string s)

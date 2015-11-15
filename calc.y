@@ -53,7 +53,16 @@ intermediate:
         stack_machine.pop_back();
         cout << "pop %eax" << endl;
         cout << "movl %eax, " << local_variable_offset << "(%ebp)" << "  ;" << "assign " << *$1 << endl;
-        symbol_table.add(*$1, local_variable_offset);
+        
+        // Create a new symbol and put it into the symbol table.
+        Symbol* new_symbol = new Symbol();
+        new_symbol->set_name(*$1);
+        new_symbol->set_type(Type::INT);
+        new_symbol->set_int_value($3);
+        // TODO: update later....
+        new_symbol->set_address("-4");
+
+        symbol_table.add(*$1, new_symbol);
 
         // Update the offset
         local_variable_offset += -4;
@@ -93,7 +102,7 @@ exp:
         stack_machine.push_back(symbol_result);
 
         cout << "addl %edx, %eax" << endl;
-        cout << "push %eax " << symbol_result->get_int_value() << endl;
+        cout << "push %eax " << symbol_1->get_int_value() << endl;
 
         $$ = $1 + $3;
       }
@@ -176,31 +185,27 @@ term:
 
 final_state:
       VARIABLE {
-        $$ = 0;
-
-        // Push it to the stack machine ??
-        Symbol *new_symbol = new Symbol();
-        new_symbol->set_type(Type::INT);
-
-        new_symbol->set_name(*$1);
-
-        // set int value
+        // get the local variable fromt the symbol table
         if (symbol_table.is_variable_defined(*$1)) {
-          new_symbol->set_int_value(symbol_table.get_value(*$1));
-          stack_machine.push_back(new_symbol);
 
-          cout << "push " << new_symbol->get_int_value() << "(%ebp)" << "  ;get " << new_symbol->get_name()<< endl;
+          Symbol *tmp_symbol; 
+          tmp_symbol = symbol_table.get_symbol(*$1);
+
+          $$ = tmp_symbol->get_int_value();
+
+          stack_machine.push_back(tmp_symbol);
+          cout << "push " << 0 << "(%ebp)" << "  ;get " << tmp_symbol->get_name()<< endl;
 
         } else {
           cout << "ERROR: " <<*$1 << " has not been initialized." << endl;
-          // exit(1);
+          exit(1);
         }
         
       }
     | INTEGER_LITERAL { 
         $$ = $1; 
 
-        // Push it to the stack machine ??
+        // Push it to the stack machine
         Symbol *new_symbol = new Symbol();
         new_symbol->set_type(Type::CONST_INT);
         new_symbol->set_int_value($1);
