@@ -11,6 +11,9 @@ imul %edx, %eax
 push %eax
 push $.LC0    # display the value calling the function printf 
 call _printf
+push $1
+push $.LC0    # display the value calling the function printf 
+call _printf
 movl $0, %eax
 leave
 ret

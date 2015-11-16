@@ -52,7 +52,6 @@ protected:
 	std::string address;
 };
 
-// change value to symbol...
 
 class Symbol_Table
 {
