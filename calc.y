@@ -72,9 +72,7 @@ intermediate:
       $$ = $1;
 
       // printf function.
-      // cout << "movl %eax, %esi" << endl;
       cout << "push $.LC0" << "    # display the value calling the function printf "<< endl;
-      // cout << "movl $0, %eax" << endl;
       cout << "call _printf" << endl;
 
     }
@@ -150,7 +148,7 @@ term:
 
         stack_machine.push_back(symbol_result);
 
-        cout << "imul %edx %eax" << endl;
+        cout << "imul %edx, %eax" << endl;
         cout << "push %eax" << endl;
 
         $$ = $1 * $3; 
