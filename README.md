@@ -13,7 +13,7 @@ It's in x86 Assembly/GAS Syntax. The assembly code is directly executable.
 
 Type ``` make clean ``` to clean files.
 
-###Note:
+Note:
 ========
 1. The symbol object get the value of the address when this symbol object is initialized.
 
