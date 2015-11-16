@@ -72,11 +72,10 @@ intermediate:
       $$ = $1;
 
       // printf function.
-      cout << "pop %eax" << "    # display the value calling the function printf "<< endl;
-      cout << "movl %eax, %esi" << endl;
-      cout << "$.LCO, %edi" << endl;
-      cout << "movl $0, %eax" << endl;
-      cout << "call printf" << endl;
+      // cout << "movl %eax, %esi" << endl;
+      cout << "push $.LC0" << "    # display the value calling the function printf "<< endl;
+      // cout << "movl $0, %eax" << endl;
+      cout << "call _printf" << endl;
 
     }
     | {}
